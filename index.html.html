@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IA et recherche scientifique — Feuille de route</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,600;0,700;0,800;1,700&family=Nunito+Sans:wght@400;600;700;800&display=swap">
+<style>
+/* VOICE: atelier universitaire, chaleureux et clair — la charte de l'infographie (bleu nuit + orange)
+   IDEA: une vraie feuille de route : la route se prolonge à chaque étape, les étapes passées rétrécissent
+   PICTURE: route bleu nuit à pointillés blancs, épingles orange, grande carte de l'étape en cours
+   COLOUR and TYPE: blanc + bibliothèque floue, bleu nuit #14246B, orange #F07A1E, bleu clair ; Poppins + Nunito Sans
+   LAYOUT: scène 1600×900 mise à l'échelle ; route en haut, carte détaillée en bas */
+:root{--navy:#14246B;--navy2:#1F3A8A;--road:#1B2C68;--or:#F07A1E;--or2:#FFE6D1;--orb:#F6B27A;--bl:#EEF5FD;--blb:#B9D3F0;--ink:#0E1430;
+--disp:'Poppins','Segoe UI',Arial,sans-serif;--sans:'Nunito Sans','Segoe UI',Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#DDE5F0;overflow:hidden;font-family:var(--sans);color:var(--ink)}
+#vp{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#stage{width:1600px;height:900px;flex:none;position:relative;overflow:hidden;background:#fff;box-shadow:0 20px 60px rgba(15,27,51,.18);transform-origin:center}
+#bg{position:absolute;inset:-20px;background:url(bg.jpg) center/cover;filter:blur(4px)}
+#bg::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.45)}
+.sc{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .45s}
+.sc.on{opacity:1;pointer-events:auto}
+.sc .a{opacity:0;transform:translateY(18px);transition:opacity .55s,transform .55s}
+.sc.on .a{opacity:1;transform:none;transition-delay:calc(.35s + var(--i,0)*.12s)}
+h1,h2,h3{font-family:var(--disp);color:var(--navy);line-height:1.1}
+.ico{display:inline-block;flex:none}.ico svg{width:100%;height:100%;display:block;overflow:visible}
+
+/* couverture */
+.logos{position:absolute;left:80px;right:80px;top:26px;height:108px;border-radius:22px;background:linear-gradient(90deg,#0D1D52,#1B3A80 50%,#0D1D52);display:flex;align-items:center;justify-content:space-between;padding:8px 40px;box-shadow:0 10px 26px rgba(13,29,82,.25)}
+.logos img{height:92px;width:auto}.logos img.mid{height:78px}
+.cover{display:flex;flex-direction:column;align-items:center;text-align:center;padding:168px 120px 0}
+.cover h1{font-size:60px;font-weight:800;letter-spacing:-.01em}
+.cover .sub{font-family:var(--disp);font-style:italic;font-weight:700;font-size:32px;color:var(--or);margin-top:14px;display:flex;align-items:center;gap:18px}
+.cover .sub::before,.cover .sub::after{content:"";width:70px;height:4px;border-radius:4px;background:var(--or)}
+.pill{display:inline-flex;align-items:center;gap:16px;background:linear-gradient(90deg,#F07A1E,#F59A45);color:#fff;font-family:var(--disp);font-weight:700;font-size:27px;padding:12px 34px;border-radius:50px;margin-top:28px;box-shadow:0 8px 20px rgba(240,122,30,.3)}
+.objg{display:flex;align-items:stretch;margin-top:30px;max-width:1260px;background:#fff;border:2px solid var(--blb);border-radius:20px;overflow:hidden;box-shadow:0 8px 24px rgba(20,36,107,.1);text-align:left}
+.objg .h{background:var(--navy);color:#fff;display:flex;align-items:center;gap:14px;padding:18px 26px;font-family:var(--disp);font-weight:700;font-size:23px;line-height:1.15;width:330px;flex:none}
+.objg p{padding:18px 28px;font-size:23px;font-weight:700;color:var(--ink);line-height:1.35;align-self:center}
+.side{position:absolute;top:190px;width:150px;height:150px}
+.side.l{left:70px}.side.r{right:70px}
+.mini{position:absolute;left:0;right:0;bottom:0;height:150px}
+
+/* bandeau des diapos route */
+.hdr{position:absolute;left:40px;right:40px;top:22px;height:72px;display:flex;align-items:center;justify-content:space-between;z-index:3}
+.hdr .t{display:flex;align-items:center;gap:16px}
+.hdr .t b{font-family:var(--disp);font-size:28px;color:var(--navy);display:block;line-height:1.1}
+.hdr .t span{font-size:17px;font-weight:700;color:var(--or)}
+.hdr .r{display:flex;align-items:center;gap:12px;font-family:var(--disp);font-weight:700;font-size:19px;color:var(--navy)}
+.hdr .step{background:#fff;border:2px solid var(--blb);border-radius:40px;padding:7px 20px}
+.hdr .dur{background:var(--navy);color:#fff;border-radius:40px;padding:9px 22px}
+
+/* route */
+#map{position:absolute;inset:0;transition:opacity .5s;z-index:2;pointer-events:none}
+#map.off{opacity:0}
+#road{position:absolute;inset:0;width:1600px;height:900px}
+.st{position:absolute;left:0;top:0;width:240px;height:330px;transform-origin:120px 150px;will-change:transform}
+.st .ill{position:absolute;left:80px;top:0;width:80px;height:72px}
+.st .pin{position:absolute;left:94px;top:82px;width:52px;height:70px;filter:drop-shadow(0 4px 4px rgba(0,0,0,.25))}
+.st .lab{position:absolute;left:4px;right:4px;top:176px;background:#fff;border:3px solid var(--orb);border-radius:60px;text-align:center;padding:9px 6px 10px;box-shadow:0 6px 16px rgba(240,122,30,.18)}
+.st .lab b{display:block;font-family:var(--disp);font-size:21px;color:var(--navy);line-height:1.1}
+.st .lab strong{display:block;font-family:var(--disp);font-size:27px;font-weight:800;color:var(--navy);line-height:1.1}
+.st .lab i{display:block;font-style:normal;font-weight:800;font-size:17px;color:var(--navy);line-height:1.2}
+.st.pause .lab{background:var(--or2);border-color:var(--or)}
+.st .tm{position:absolute;left:28px;right:28px;top:290px;height:38px;background:#fff;border:2px solid var(--blb);border-radius:30px;display:flex;align-items:center;justify-content:center;gap:8px;font-family:var(--disp);font-weight:700;font-size:18px;color:var(--navy)}
+.st .tm .ico{width:22px;height:22px}
+.st.cur .lab{border-color:var(--or);border-width:4px;box-shadow:0 10px 26px rgba(240,122,30,.35)}
+.flag{position:absolute;left:0;top:0;width:160px;height:200px;transform-origin:80px 150px}
+.flag .fl{position:absolute;left:52px;top:28px;width:66px;height:124px}
+.flag .tx{position:absolute;z-index:1;left:0;right:0;top:-40px;margin:auto;width:150px;background:var(--navy);color:#fff;border-radius:12px;text-align:center;font-family:var(--disp);font-weight:700;font-size:19px;line-height:1.15;padding:6px 4px}
+.flag.fin .tx{background:var(--or)}
+
+/* carte détaillée */
+.panel{position:absolute;left:40px;right:40px;top:508px;bottom:22px;display:grid;grid-template-columns:450px 1fr;gap:24px}
+.col{display:flex;flex-direction:column;gap:14px;min-height:0}
+.card{background:rgba(255,255,255,.96);border:2px solid var(--blb);border-radius:18px;box-shadow:0 8px 22px rgba(20,36,107,.09)}
+.obj{padding:16px 20px;flex:1}
+.ch{display:flex;align-items:center;gap:12px;font-family:var(--disp);font-weight:700;font-size:22px;color:var(--navy);margin-bottom:6px}
+.ch .ico{width:38px;height:38px}
+.obj p{font-size:21px;font-weight:700;line-height:1.35;color:var(--ink)}
+.tool{padding:12px 18px;display:flex;align-items:center;gap:14px}
+.tool .ico{width:40px;height:40px}
+.tool p{font-size:18px;line-height:1.3;color:var(--ink)}.tool p b{color:var(--navy);font-family:var(--disp)}
+.tot{background:linear-gradient(90deg,#F07A1E,#F59A45);color:#fff;font-family:var(--disp);font-weight:800;font-size:26px;text-align:center;border-radius:14px;padding:9px;box-shadow:0 6px 16px rgba(240,122,30,.3)}
+.acts{overflow:hidden;display:flex;flex-direction:column}
+.acts .ah{background:var(--or);color:#fff;display:flex;align-items:center;gap:12px;padding:10px 20px;font-family:var(--disp);font-weight:700;font-size:22px}
+.acts .ah .ico{width:32px;height:32px}
+.seg{display:flex;gap:3px;margin-left:auto;width:300px;height:14px}
+.seg i{background:#fff;border-radius:4px;opacity:.95}.seg i:nth-child(even){opacity:.6}
+.acts ul{list-style:none;flex:1;display:flex;flex-direction:column;justify-content:space-evenly;padding:6px 22px}
+.acts li{display:flex;align-items:center;gap:16px;font-size:21px;font-weight:600;line-height:1.28;color:var(--ink)}
+.acts.many li{font-size:19px}
+.acts li::before{content:"";width:12px;height:12px;border-radius:3px;background:var(--or);flex:none}
+.acts li span{flex:1}
+.acts li em{font-style:normal;flex:none;background:var(--or);color:#fff;font-family:var(--disp);font-weight:700;font-size:18px;border-radius:9px;padding:4px 12px;min-width:84px;text-align:center}
+.pausec{position:absolute;left:0;right:0;top:530px;display:flex;justify-content:center}
+.pausec .card{display:flex;align-items:center;gap:30px;padding:28px 50px}
+.pausec .ico{width:110px;height:110px}
+.pausec h2{font-size:46px}.pausec p{font-family:var(--disp);font-weight:700;font-size:26px;color:var(--or)}
+
+/* vue d'ensemble */
+.ov{position:absolute;left:0;right:0;top:432px;bottom:24px}
+.ovc{position:absolute;top:0;bottom:0;width:186px;padding:12px 12px;display:flex;flex-direction:column;gap:8px}
+.ovc p{font-size:16.5px;font-weight:700;line-height:1.3;color:var(--ink);flex:1}
+.ovc .k{font-size:14px;line-height:1.3;color:var(--ink);border-top:2px dashed var(--blb);padding-top:7px}
+.ovc .k b{color:var(--navy)}
+.ovc .tot{font-size:19px;padding:5px}
+.ovc.pz{justify-content:center;align-items:center;text-align:center;background:rgba(255,230,209,.95);border-color:var(--orb)}
+.ovc.pz .ico{width:70px;height:70px}
+
+/* dernière diapo */
+.fin{padding:40px 70px 0;height:765px;display:flex;flex-direction:column}
+.fin h2{font-size:44px;text-align:center}
+.band{display:flex;align-items:stretch;margin-top:26px;gap:18px;flex:1}
+.band .lb{width:250px;flex:none;border-radius:18px;background:var(--navy);color:#fff;font-family:var(--disp);font-weight:700;font-size:25px;line-height:1.2;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;text-align:center;padding:16px}
+.band .lb .ico{width:56px;height:56px}
+.band .lb.o{background:var(--or)}
+.mth{flex:1;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+.mth .card{padding:18px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px}
+.mth .ico{width:96px;height:96px}.mth .card{justify-content:center}
+.mth b{font-family:var(--disp);font-size:23px;color:var(--navy);line-height:1.25}
+.kiss{flex:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.kiss .card{justify-content:center;padding:18px 14px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;border-width:3px}
+.kiss .ico{width:96px;height:96px}
+.kiss b{font-family:var(--disp);font-size:40px;line-height:1}
+.kiss span{font-size:24px;font-weight:700;color:var(--ink)}
+.flogo{position:absolute;left:0;right:0;bottom:22px;display:flex;justify-content:center}
+.flogo div{display:flex;gap:40px;align-items:center;background:linear-gradient(90deg,#0D1D52,#1B3A80 50%,#0D1D52);border-radius:18px;padding:8px 36px}
+.flogo img{height:62px;width:auto}
+
+/* navigation */
+#nav{position:fixed;right:16px;bottom:14px;display:flex;gap:8px;align-items:center;z-index:10;opacity:.3;transition:opacity .3s}#nav:hover,#nav:focus-within{opacity:1}
+#nav button{width:44px;height:44px;border-radius:50%;border:0;background:var(--navy);color:#fff;font-size:20px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+#nav button:focus-visible{outline:3px solid var(--or);outline-offset:2px}
+#nav span{background:#fff;color:var(--navy);font:700 15px var(--disp);padding:8px 14px;border-radius:30px;box-shadow:0 4px 12px rgba(0,0,0,.12)}
+#prog{position:absolute;left:0;bottom:0;height:6px;background:var(--or);transition:width .5s;z-index:5}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+
+/* --- v2 : nouvelle structure --- */
+.st .lab i{font-size:16px}
+.col{gap:12px}
+.obj{padding:14px 18px}
+.obj .axe{font-family:var(--disp);font-weight:700;font-size:16.5px;line-height:1.3;color:var(--or);margin-bottom:8px}
+.obj p{font-size:19px}
+.pos{padding:12px 16px}
+.pos .lb2{font-family:var(--disp);font-weight:700;font-size:17px;color:var(--navy);margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.pos .lb2 .ico{width:30px;height:30px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{background:var(--bl);border:2px solid var(--blb);color:var(--navy);font-weight:800;font-size:16px;border-radius:30px;padding:4px 13px}
+.rc{display:flex;flex-direction:column;gap:12px;min-height:0}
+.rc .acts{flex:1}
+.acts .ah em{margin-left:auto;font-style:normal;background:#fff;color:var(--or);border-radius:9px;padding:3px 12px;font-size:19px}
+.acts li::before{margin-top:0}
+.acts.many li{font-size:19px}
+.actv{display:flex;align-items:center;gap:18px;padding:12px 20px;background:linear-gradient(90deg,#FFF1E5,#FFE3CC);border:2px solid var(--orb)}
+.actv .ico{width:58px;height:58px}
+.actv .tx{flex:1}
+.actv small{display:block;font-family:var(--disp);font-weight:700;font-size:15px;color:var(--or)}
+.actv b{display:block;font-family:var(--disp);font-size:23px;color:var(--navy);line-height:1.2}
+.actv span{display:block;font-size:16px;font-weight:700;color:var(--ink)}
+.actv em{font-style:normal;background:var(--or);color:#fff;font-family:var(--disp);font-weight:800;font-size:22px;border-radius:12px;padding:8px 16px;white-space:nowrap}
+.kp{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;flex:1}
+.kp .card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-width:3px;text-align:center}
+.kp .ico{width:84px;height:84px}.kp b{font-family:var(--disp);font-size:36px;line-height:1}.kp span{font-size:21px;font-weight:700}
+/* panoplie d'outils */
+.tools{position:absolute;left:40px;right:40px;top:508px;bottom:22px;display:flex;flex-direction:column;overflow:hidden}
+.tools .ah{background:var(--navy);color:#fff;display:flex;align-items:center;gap:12px;padding:10px 22px;font-family:var(--disp);font-weight:700;font-size:23px}
+.tools .ah .ico{width:34px;height:34px}
+.tg{flex:1;display:grid;gap:14px;padding:14px 16px}
+.grp{display:flex;flex-direction:column;gap:8px;min-height:0}
+.grp h4{font-family:var(--disp);font-size:17px;line-height:1.2;color:var(--navy)}
+.grp .pz{align-self:flex-start;font-size:13.5px;font-weight:800;color:#fff;border-radius:20px;padding:2px 10px}
+.tile{display:flex;align-items:center;gap:12px;background:#fff;border:2px solid var(--blb);border-radius:14px;padding:7px 12px;font-family:var(--disp);font-weight:700;font-size:18px;color:var(--ink);line-height:1.2;box-shadow:0 4px 10px rgba(20,36,107,.06);opacity:0;transform:scale(.85);transition:opacity .4s,transform .4s}
+.sc.on .tile{opacity:1;transform:none;transition-delay:calc(.45s + var(--d)*.05s)}
+.tile i{width:34px;height:34px;flex:none;border-radius:10px;color:#fff;font-style:normal;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px}
+.tile a{color:inherit;text-decoration:none;border-bottom:2px dotted var(--blb)}
+/* axes et postures */
+.ax{padding:30px 40px 0}
+.ax h2,.mt h2,.bib h2{font-size:40px;text-align:center}
+.axg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px 14px;margin-top:20px}
+.axc{border-radius:18px;background:#fff;border-top:10px solid var(--c);box-shadow:0 8px 22px rgba(20,36,107,.1);padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.axc .hd{display:flex;align-items:center;gap:12px}.axc .ico{width:52px;height:52px}
+.axc b{font-family:var(--disp);font-size:25px;color:var(--c);line-height:1}
+.axc p{font-size:16.5px;font-weight:700;line-height:1.32;color:var(--ink)}
+.band2{grid-column:2/6;background:var(--navy);color:#fff;border-radius:12px;font-family:var(--disp);font-weight:700;font-size:19px;display:flex;align-items:center;justify-content:center;gap:12px;padding:7px}
+.band2 .ico{width:30px;height:30px}
+.pst{background:#fff;border:3px solid var(--c);border-radius:14px;display:flex;align-items:center;gap:12px;padding:7px 14px;font-family:var(--disp);font-weight:700;font-size:18.5px;color:var(--ink);line-height:1.15}
+.pst .ico{width:40px;height:40px}
+.pst small{margin-left:auto;font-size:13.5px;color:#fff;background:linear-gradient(90deg,#F07A1E,#0F8C8C);border-radius:20px;padding:3px 10px;white-space:nowrap}
+.cmp{background:linear-gradient(160deg,#14246B,#1F3A8A);color:#fff;border-radius:18px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:10px;padding:16px;font-family:var(--disp);font-weight:700;font-size:20px;line-height:1.25}
+.cmp .ico{width:70px;height:70px}
+/* démarche */
+.mt{padding:30px 60px 0}
+.mt .mth{margin-top:18px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+.mt .mth .card{padding:12px;flex-direction:row;justify-content:flex-start;text-align:left;gap:12px}
+.mt .mth .ico{width:56px;height:56px}.mt .mth b{font-size:18px}
+.al{margin-top:16px;display:flex;flex-direction:column;gap:9px}
+.ar{display:grid;grid-template-columns:56px minmax(0,1fr) 420px 110px;align-items:center;gap:16px;background:#fff;border:2px solid var(--blb);border-radius:14px;padding:8px 16px}
+.ar .ico{width:48px;height:48px}
+.ar b{font-family:var(--disp);font-size:21px;color:var(--navy)}
+.ar span{font-size:17px;font-weight:700;color:var(--ink)}
+.ar em{font-style:normal;background:var(--or);color:#fff;font-family:var(--disp);font-weight:800;font-size:20px;border-radius:10px;padding:5px 0;text-align:center}
+.bud{margin-top:16px;display:flex;height:54px;border-radius:14px;overflow:hidden;box-shadow:0 6px 16px rgba(20,36,107,.12)}
+.bud div{display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--disp);font-weight:700;font-size:18px;white-space:nowrap;overflow:hidden}
+.budl{display:flex;justify-content:flex-end;margin-top:8px;font-family:var(--disp);font-weight:800;font-size:20px;color:var(--navy)}
+/* conclusion */
+.cc{display:flex;flex-direction:column;align-items:center;text-align:center;padding:90px 120px 0}
+.cc>.ico{width:150px;height:150px}
+.cc h1{font-size:56px;font-weight:800;margin-top:22px}
+.cc p{font-size:28px;font-weight:700;color:var(--ink);max-width:1150px;margin-top:18px;line-height:1.4}
+.qual{display:flex;gap:18px;margin-top:34px}
+.qual > span{display:flex;align-items:center;gap:12px;background:#fff;border:3px solid var(--orb);border-radius:50px;padding:9px 24px 9px 10px;font-family:var(--disp);font-weight:700;font-size:23px;color:var(--navy);box-shadow:0 6px 16px rgba(240,122,30,.15)}
+.qual .ico{width:46px;height:46px;flex:none;padding:0;border:0;background:none;box-shadow:none}
+/* bibliographie */
+.bib{padding:40px 110px 0}
+.bib ol{list-style:none;margin-top:30px;background:rgba(255,255,255,.96);border:2px solid var(--blb);border-radius:20px;padding:26px 40px;box-shadow:0 8px 22px rgba(20,36,107,.09)}
+.bib li{font-family:'Times New Roman',Tinos,Times,serif;font-size:21px;line-height:1.5;color:#000;padding-left:1.27cm;text-indent:-1.27cm;margin-bottom:12px}
+.bib li:last-child{margin-bottom:0}
+.bib a{color:#1F3A8A;word-break:break-all}
+
+.hdr .t span#hsub{display:block;max-width:860px;font-size:16px;line-height:1.25}
+.ovc p.ob{font-size:14.5px;font-weight:700;line-height:1.3;flex:1}
+.ovc .k{flex:none}
+.tg.dense{gap:10px;padding:10px 12px}.tg.dense .grp{gap:6px}.tg.dense .grp h4{font-size:15.5px}
+.tg.dense .tile{font-size:16px;padding:4px 10px}.tg.dense .tile i{width:28px;height:28px;font-size:15px}
+.axg{grid-template-rows:auto 46px repeat(4,80px);gap:14px 16px;margin-top:24px}
+.axc{padding:16px 18px}.axc p{font-size:18px}.axc b{font-size:26px}
+.pst{font-size:21px;padding:8px 16px}.pst .ico{width:50px;height:50px}.pst small{font-size:15px}
+.cmp{font-size:23px}.cmp .ico{width:90px;height:90px}
+
+.hdr .r{flex:none}.hdr .r span{white-space:nowrap}
+.hdr .t span#hsub{max-width:740px}
+.axc b{font-size:23px}
+
+.al{gap:12px;margin-top:20px}.ar{padding:13px 18px}.ar b{font-size:23px}.ar span{font-size:19px}.ar em{font-size:22px}
+.bud{height:62px;margin-top:22px}.bud div{font-size:20px}
+.bib li{font-size:22px}.bib a{word-break:normal;overflow-wrap:anywhere}
+
+.src{margin-top:14px;text-align:center;font-size:17px;font-weight:700;color:var(--ink);font-style:italic}
+.bib{padding-top:26px}.bib ol{margin-top:18px;padding:20px 36px}.bib li{font-size:17.5px;line-height:1.42;margin-bottom:8px}
+
+.bl{display:inline-block;margin-top:10px;background:var(--or2);border:2px solid var(--orb);color:#9A4A0C;font-family:var(--disp);font-weight:700;font-size:15px;border-radius:20px;padding:3px 14px}
+.obj p b{color:var(--or)}
+.bpart{font-size:24px;color:var(--or)}
+.bib li{font-size:18px;line-height:1.4;margin-bottom:8px}
+.bib ol{padding:18px 32px}
+.tbx{padding:40px 70px 0}.tbx h2{font-size:42px;text-align:center}
+.lead2{text-align:center;font-size:21px;font-weight:700;color:var(--ink);margin-top:12px}
+.tbg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-top:30px}
+.tbg .card{padding:24px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;min-height:330px}
+.tbg .ico{width:90px;height:90px}.tbg b{font-family:var(--disp);font-size:23px;color:var(--navy);line-height:1.2}.tbg p{font-size:18px;line-height:1.4;color:var(--ink)}
+.lic{display:flex;align-items:center;gap:24px;margin-top:28px;background:#fff;border:2px solid var(--blb);border-left:10px solid var(--or);border-radius:16px;padding:18px 26px}
+.lic .cc{flex:none;background:var(--navy);color:#fff;font-family:var(--disp);font-weight:800;font-size:24px;border-radius:12px;padding:10px 18px}
+.lic p{font-size:19px;line-height:1.4;color:var(--ink)}
+.ovc p.ob{font-size:13.5px}
+</style>
+</head>
+<body>
+<div id="vp"><div id="stage">
+<div id="bg"></div>
+
+<!-- Couverture -->
+<section class="sc" data-k="cover">
+  <div class="logos a">
+    <img src="logo_ump.png" alt="Université Mohammed Premier, Oujda">
+    <img class="mid" src="logo_ceduc.png" alt="Laboratoire CEDUC">
+    <img src="logo_flsho.png" alt="Faculté des Lettres et des Sciences Humaines, Oujda">
+  </div>
+  <div class="side l ico a" style="--i:1" data-i="chip"></div>
+  <div class="side r ico a" style="--i:1" data-i="cap"></div>
+  <div class="cover">
+    <h1 class="a" style="--i:0">Intelligence artificielle<br>et recherche scientifique</h1>
+    <p class="sub a" style="--i:1">Questionner pour comprendre, instrumenter pour entreprendre</p>
+    <div class="pill a" style="--i:2"><span class="ico" style="width:38px;height:38px" data-i="cal"></span>Feuille de route de l’atelier — Durée totale : 4 heures</div>
+    <div class="objg a" style="--i:3">
+      <div class="h"><span class="ico" style="width:46px;height:46px" data-i="target"></span>Objectif général de l’atelier</div>
+      <p>Intégrer l’intelligence artificielle générative (IAG), de manière critique, méthodique et responsable, dans les différentes étapes de la recherche scientifique.</p>
+    </div>
+  </div>
+  <svg class="mini a" style="--i:4" viewBox="0 0 1600 150" preserveAspectRatio="none" id="miniroad"></svg>
+</section>
+
+<!-- Axes et postures -->
+<section class="sc" data-k="axes"><div class="ax">
+  <h2 class="a" style="--i:0">Les axes de l’atelier et les postures attribuées à l’IAG</h2>
+  <div class="axg" id="axg"></div>
+  <p class="src a" style="--i:6">Typologie élaborée par les autrices à partir de Messeri et Crockett (2024), Sabzalieva et Valentini (2023) et Khalifa et Albadawy (2024).</p>
+</div></section>
+
+<div id="steps"></div>
+
+<!-- Vue d'ensemble -->
+<section class="sc" data-k="ov"><div class="ov" id="ov"></div></section>
+
+<!-- Démarche pédagogique -->
+<section class="sc" data-k="mt"><div class="mt">
+  <h2 class="a" style="--i:0">Démarche pédagogique : méthodes et activités</h2>
+  <div class="mth a" style="--i:1">
+    <div class="card"><span class="ico" data-i="poll"></span><b>Sondage interactif (Wooclap)</b></div>
+    <div class="card"><span class="ico" data-i="board"></span><b>Exposés courts et illustrés</b></div>
+    <div class="card"><span class="ico" data-i="laptop"></span><b>Démonstrations d’outils</b></div>
+    <div class="card"><span class="ico" data-i="puzzle"></span><b>Activités pratiques</b></div>
+    <div class="card"><span class="ico" data-i="chat"></span><b>Discussion et mise en commun</b></div>
+  </div>
+  <div class="al a" style="--i:2" id="al"></div>
+  <div class="bud a" style="--i:3">
+    <div style="flex:135;background:var(--navy)">Apports et démonstrations : 2 h 15</div>
+    <div style="flex:105;background:var(--or)">Activités : 1 h 45</div>
+  </div>
+  <div class="budl a" style="--i:3">2 h 15 d’apports + 1 h 45 d’activités = 4 heures</div>
+</div></section>
+
+<!-- Boîte à outils -->
+<section class="sc" data-k="bx"><div class="tbx">
+  <h2 class="a" style="--i:0">La boîte à outils du chercheur instrumenté</h2>
+  <p class="lead2 a" style="--i:1">Remise à chaque participant pour prolonger l’atelier dans ses propres projets : tout est préparé et testé en amont par l’équipe d’animation.</p>
+  <div class="tbg">
+    <div class="card a" style="--i:2"><span class="ico" data-i="laptop"></span><b>Outils techniques commentés</b><p>Liens cliquables, fonctionnalités utiles au chercheur, conditions d’accès, points de vigilance, tutoriels et courtes vidéos de démonstration.</p></div>
+    <div class="card a" style="--i:2.3"><span class="ico" data-i="chat"></span><b>Formats de prompts testés</b><p>Un prompt par activité, structuré : rôle, contexte, tâche, ressources, contraintes, format de sortie et signalement des incertitudes.</p></div>
+    <div class="card a" style="--i:2.6"><span class="ico" data-i="quizc"></span><b>Grilles et modèles</b><p>Grille comparative, canevas du compagnon maïeutique, grille d’audit, grille de régulation et modèle d’IAgraphie.</p></div>
+    <div class="card a" style="--i:2.9"><span class="ico" data-i="chart"></span><b>Jeux de données fictifs</b><p>Questionnaire, guide d’entretien, base quantitative et corpus qualitatif, conformes à la loi n° 09-08.</p></div>
+  </div>
+  <div class="lic a" style="--i:3.4"><span class="cc">CC BY-NC 4.0</span><p>Supports et boîte à outils diffusés sous licence <b>Creative Commons Attribution – Pas d’utilisation commerciale 4.0 International</b> : partage et adaptation libres, en citant la source, à des fins non commerciales.</p></div>
+</div></section>
+
+<!-- Conclusion -->
+<section class="sc" data-k="cc">
+  <div class="cc">
+    <span class="ico a" style="--i:0" data-i="cap"></span>
+    <h1 class="a" style="--i:1">Un chercheur autonome, instrumenté,<br>critique et responsable</h1>
+    <p class="a" style="--i:2">Capable de mobiliser l’IAG, d’en réguler les contributions et de justifier ses propres décisions scientifiques.</p>
+    <div class="qual a" style="--i:3">
+      <span><span class="ico" data-i="target"></span>Autonome</span>
+      <span><span class="ico" data-i="laptop"></span>Instrumenté</span>
+      <span><span class="ico" data-i="chat"></span>Critique</span>
+      <span><span class="ico" data-i="check"></span>Responsable</span>
+    </div>
+  </div>
+  <div class="flogo a" style="--i:4"><div>
+    <img src="logo_ump.png" alt="Université Mohammed Premier, Oujda">
+    <img src="logo_ceduc.png" alt="Laboratoire CEDUC" style="height:54px">
+    <img src="logo_flsho.png" alt="Faculté des Lettres et des Sciences Humaines, Oujda">
+  </div></div>
+</section>
+
+<!-- Bibliographie -->
+<section class="sc" data-k="bib"><div class="bib">
+  <h2 class="a" style="--i:0">Bibliographie <span class="bpart">(1/2)</span></h2>
+  <ol class="a" style="--i:1">
+    <li>Alea Albada, N., &amp; Woods, V. E. (2025). Giving credit where credit is due: An artificial intelligence contribution statement for research methods writing assignments. <i>Teaching of Psychology, 52</i>(3), 279–284. <a href="https://doi.org/10.1177/00986283241259750" target="_blank" rel="noopener">https://doi.org/10.1177/00986283241259750</a></li>
+    <li>ALLEA. (2023). <i>The European code of conduct for research integrity</i> (éd. révisée). All European Academies. <a href="https://doi.org/10.26356/ECOC" target="_blank" rel="noopener">https://doi.org/10.26356/ECOC</a></li>
+    <li>American Psychological Association. (2026). <i>AI contribution statement guide</i> [Instructional aid]. <a href="https://apastyle.apa.org/instructional-aids/ai-contribution-statement.pdf" target="_blank" rel="noopener">https://apastyle.apa.org/instructional-aids/ai-contribution-statement.pdf</a></li>
+    <li>Anderson, L. W., &amp; Krathwohl, D. R. (Eds.). (2001). <i>A taxonomy for learning, teaching, and assessing: A revision of Bloom’s taxonomy of educational objectives</i>. Longman.</li>
+    <li>Artino, A. R., Jr., La Rochelle, J. S., Dezee, K. J., &amp; Gehlbach, H. (2014). Developing questionnaires for educational research: AMEE Guide No. 87. <i>Medical Teacher, 36</i>(6), 463–474. <a href="https://doi.org/10.3109/0142159X.2014.889814" target="_blank" rel="noopener">https://doi.org/10.3109/0142159X.2014.889814</a></li>
+    <li>Association of College and Research Libraries. (2016). <i>Framework for information literacy for higher education</i>. American Library Association. <a href="https://www.ala.org/acrl/standards/ilframework" target="_blank" rel="noopener">https://www.ala.org/acrl/standards/ilframework</a></li>
+    <li>Bachelard, G. (1938). <i>La formation de l’esprit scientifique : contribution à une psychanalyse de la connaissance objective</i>. Vrin.</li>
+    <li>Biggs, J. (1996). Enhancing teaching through constructive alignment. <i>Higher Education, 32</i>(3), 347–364. <a href="https://doi.org/10.1007/BF00138871" target="_blank" rel="noopener">https://doi.org/10.1007/BF00138871</a></li>
+    <li>Black, P., &amp; Wiliam, D. (1998). Assessment and classroom learning. <i>Assessment in Education: Principles, Policy &amp; Practice, 5</i>(1), 7–74. <a href="https://doi.org/10.1080/0969595980050102" target="_blank" rel="noopener">https://doi.org/10.1080/0969595980050102</a></li>
+    <li>Castillo-Montoya, M. (2016). Preparing for interview research: The interview protocol refinement framework. <i>The Qualitative Report, 21</i>(5), 811–831. <a href="https://doi.org/10.46743/2160-3715/2016.2337" target="_blank" rel="noopener">https://doi.org/10.46743/2160-3715/2016.2337</a></li>
+    <li>Commission européenne, Direction générale de la recherche et de l’innovation. (2026). <i>Living guidelines on the responsible use of generative AI in research</i> (3e éd.). Office des publications de l’Union européenne.</li>
+    <li>Creswell, J. W., &amp; Creswell, J. D. (2018). <i>Research design: Qualitative, quantitative, and mixed methods approaches</i> (5th ed.). SAGE.</li>
+    <li>Creswell, J. W., &amp; Guetterman, T. C. (2020). <i>Educational research: Planning, conducting, and evaluating quantitative and qualitative research</i> (6th ed., global ed.). Pearson.</li>
+    <li>Gerlich, M. (2025). AI tools in society: Impacts on cognitive offloading and the future of critical thinking. <i>Societies, 15</i>(1), Article 6. <a href="https://doi.org/10.3390/soc15010006" target="_blank" rel="noopener">https://doi.org/10.3390/soc15010006</a></li>
+    <li>Gusenbauer, M., &amp; Haddaway, N. R. (2020). Which academic search systems are suitable for systematic reviews or meta-analyses? Evaluating retrieval qualities of Google Scholar, PubMed, and 26 other resources. <i>Research Synthesis Methods, 11</i>(2), 181–217. <a href="https://doi.org/10.1002/jrsm.1378" target="_blank" rel="noopener">https://doi.org/10.1002/jrsm.1378</a></li>
+  </ol>
+</div></section>
+<section class="sc" data-k="bib2"><div class="bib">
+  <h2 class="a" style="--i:0">Bibliographie <span class="bpart">(2/2)</span></h2>
+  <ol class="a" style="--i:1">
+    <li>Hoon, A., Oliver, E., Szpakowska, K., &amp; Newton, P. (2015). Use of the ‘Stop, Start, Continue’ method is associated with the production of constructive qualitative feedback by students in higher education. <i>Assessment &amp; Evaluation in Higher Education, 40</i>(5), 755–767. <a href="https://doi.org/10.1080/02602938.2014.956282" target="_blank" rel="noopener">https://doi.org/10.1080/02602938.2014.956282</a></li>
+    <li>Khalifa, M., &amp; Albadawy, M. (2024). Using artificial intelligence in academic writing and research: An essential productivity tool. <i>Computer Methods and Programs in Biomedicine Update, 5</i>, Article 100145. <a href="https://doi.org/10.1016/j.cmpbup.2024.100145" target="_blank" rel="noopener">https://doi.org/10.1016/j.cmpbup.2024.100145</a></li>
+    <li>Lee, H.-P., Sarkar, A., Tankelevitch, L., Drosos, I., Rintel, S., Banks, R., &amp; Wilson, N. (2025). The impact of generative AI on critical thinking: Self-reported reductions in cognitive effort and confidence effects from a survey of knowledge workers. In <i>Proceedings of the 2025 CHI Conference on Human Factors in Computing Systems</i> (Article 1121, pp. 1–22). ACM. <a href="https://doi.org/10.1145/3706598.3713778" target="_blank" rel="noopener">https://doi.org/10.1145/3706598.3713778</a></li>
+    <li>Lewis, P., Perez, E., Piktus, A., Petroni, F., Karpukhin, V., Goyal, N., Küttler, H., Lewis, M., Yih, W., Rocktäschel, T., Riedel, S., &amp; Kiela, D. (2020). <i>Retrieval-augmented generation for knowledge-intensive NLP tasks</i> (arXiv:2005.11401). arXiv. <a href="https://doi.org/10.48550/arXiv.2005.11401" target="_blank" rel="noopener">https://doi.org/10.48550/arXiv.2005.11401</a></li>
+    <li>Loi n° 09-08 relative à la protection des personnes physiques à l’égard du traitement des données à caractère personnel, promulguée par le dahir n° 1-09-15 du 18 février 2009. (2009). <i>Bulletin officiel</i> n° 5714 du 5 mars 2009.</li>
+    <li>Long, D., &amp; Magerko, B. (2020). What is AI literacy? Competencies and design considerations. In <i>Proceedings of the 2020 CHI Conference on Human Factors in Computing Systems</i> (pp. 1–16). ACM. <a href="https://doi.org/10.1145/3313831.3376727" target="_blank" rel="noopener">https://doi.org/10.1145/3313831.3376727</a></li>
+    <li>McAdoo, T., Denneny, S., &amp; Lee, C. (2025, 9 septembre). <i>Citing generative AI in APA Style: Part 1—Reference formats</i>. APA Style. <a href="https://apastyle.apa.org/blog/cite-generative-ai-references" target="_blank" rel="noopener">https://apastyle.apa.org/blog/cite-generative-ai-references</a></li>
+    <li>Messeri, L., &amp; Crockett, M. J. (2024). Artificial intelligence and illusions of understanding in scientific research. <i>Nature, 627</i>(8002), 49–58. <a href="https://doi.org/10.1038/s41586-024-07146-0" target="_blank" rel="noopener">https://doi.org/10.1038/s41586-024-07146-0</a></li>
+    <li>Miao, F., &amp; Holmes, W. (2023). <i>Guidance for generative AI in education and research</i>. UNESCO. <a href="https://unesdoc.unesco.org/ark:/48223/pf0000386693" target="_blank" rel="noopener">https://unesdoc.unesco.org/ark:/48223/pf0000386693</a></li>
+    <li>Molenaar, I. (2022). Towards hybrid human-AI learning technologies. <i>European Journal of Education, 57</i>(4), 632–645. <a href="https://doi.org/10.1111/ejed.12527" target="_blank" rel="noopener">https://doi.org/10.1111/ejed.12527</a></li>
+    <li>Mollick, E., &amp; Mollick, L. (2023). <i>Assigning AI: Seven approaches for students, with prompts</i> (arXiv:2306.10052). arXiv. <a href="https://doi.org/10.48550/arXiv.2306.10052" target="_blank" rel="noopener">https://doi.org/10.48550/arXiv.2306.10052</a></li>
+    <li>Platon. (2008). <i>Œuvres complètes</i> (L. Brisson, dir.). Flammarion.</li>
+    <li>Risko, E. F., &amp; Gilbert, S. J. (2016). Cognitive offloading. <i>Trends in Cognitive Sciences, 20</i>(9), 676–688. <a href="https://doi.org/10.1016/j.tics.2016.07.002" target="_blank" rel="noopener">https://doi.org/10.1016/j.tics.2016.07.002</a></li>
+    <li>Sabzalieva, E., &amp; Valentini, A. (2023). <i>ChatGPT and artificial intelligence in higher education: Quick start guide</i> (ED/HE/IESALC/IP/2023/12). UNESCO IESALC.</li>
+    <li>Walters, W. H., &amp; Wilder, E. I. (2023). Fabrication and errors in the bibliographic citations generated by ChatGPT. <i>Scientific Reports, 13</i>, Article 14045. <a href="https://doi.org/10.1038/s41598-023-41032-5" target="_blank" rel="noopener">https://doi.org/10.1038/s41598-023-41032-5</a></li>
+  </ol>
+</div></section>
+
+<!-- couche route persistante -->
+<div id="map" class="off">
+  <div class="hdr" id="hdr">
+    <div class="t"><span class="ico" style="width:52px;height:52px" data-i="cal"></span><div><b>Feuille de route de l’atelier</b><span id="hsub">Intelligence artificielle et recherche scientifique</span></div></div>
+    <div class="r"><span class="step" id="hstep"></span><span class="dur">Durée totale : 4 heures</span></div>
+  </div>
+  <svg id="road" viewBox="0 0 1600 900"></svg>
+  <div id="stations"></div>
+</div>
+<div id="prog"></div>
+</div></div>
+<div id="nav"><button id="prev" aria-label="Diapositive précédente">‹</button><span id="cnt"></span><button id="next" aria-label="Diapositive suivante">›</button><button id="fs" aria-label="Plein écran">⛶</button></div>
+<script>
+{
+/* ---------- icônes bicolores ---------- */
+const N='#14246B',O='#F07A1E',B='#5B8FDB',L='#CFE2F8',Y='#FFC93C',W='#fff';
+const I={
+users:`<circle cx="32" cy="32" r="30" fill="${L}"/><circle cx="18" cy="24" r="7" fill="${B}"/><path d="M6 46c0-8 5-13 12-13s12 5 12 13z" fill="${B}"/><circle cx="46" cy="24" r="7" fill="${O}"/><path d="M34 46c0-8 5-13 12-13s12 5 12 13z" fill="${O}"/><circle cx="32" cy="21" r="9" fill="${N}"/><path d="M17 52c0-10 7-16 15-16s15 6 15 16z" fill="${N}"/>`,
+bulb:`<circle cx="32" cy="32" r="30" fill="#FFF2CF"/><g stroke="${O}" stroke-width="3.5" stroke-linecap="round"><path d="M32 3v6M10 12l4 4M54 12l-4 4M4 31h6M54 31h6"/></g><path d="M32 13a15 15 0 0 0-9 27c2 2 3 4 3 7h12c0-3 1-5 3-7a15 15 0 0 0-9-27z" fill="${Y}" stroke="${N}" stroke-width="2.5"/><path d="M27 37l5-7 5 7" fill="none" stroke="${O}" stroke-width="2.5"/><rect x="25" y="49" width="14" height="5" rx="2" fill="${N}"/><rect x="27" y="56" width="10" height="4" rx="2" fill="${N}"/>`,
+books:`<circle cx="32" cy="32" r="30" fill="${L}"/><rect x="7" y="40" width="34" height="9" rx="2" fill="${N}"/><rect x="10" y="31" width="30" height="9" rx="2" fill="${B}"/><rect x="6" y="22" width="32" height="9" rx="2" fill="${O}"/><path d="M10 26h24M13 35h22M11 44h26" stroke="${W}" stroke-width="1.6"/><circle cx="44" cy="34" r="10" fill="${W}" stroke="${N}" stroke-width="4"/><path d="M51 41l8 8" stroke="${N}" stroke-width="5" stroke-linecap="round"/>`,
+doc:`<circle cx="32" cy="32" r="30" fill="${L}"/><rect x="8" y="12" width="38" height="28" rx="3" fill="${N}"/><rect x="11" y="15" width="32" height="22" fill="${W}"/><path d="M15 21h18M15 26h24M15 31h14" stroke="${B}" stroke-width="2.6" stroke-linecap="round"/><path d="M19 40h16l3 8H16z" fill="${N}"/><path d="M44 50l14-20 5 4-14 20-7 3z" fill="${O}"/><path d="M58 30l3-4 5 4-3 4z" fill="${N}"/>`,
+coffee:`<circle cx="32" cy="32" r="30" fill="#FFE9D6"/><g fill="none" stroke="${B}" stroke-width="3" stroke-linecap="round"><path d="M24 8c-3 4 3 6 0 10M32 6c-3 4 3 6 0 10M40 8c-3 4 3 6 0 10"/></g><path d="M12 24h34v10a17 17 0 0 1-34 0z" fill="${O}"/><path d="M46 28h4a6 6 0 0 1 0 12h-6" fill="none" stroke="${O}" stroke-width="4"/><ellipse cx="29" cy="55" rx="22" ry="4" fill="${N}"/>`,
+chart:`<circle cx="32" cy="32" r="30" fill="${L}"/><rect x="9" y="34" width="8" height="18" rx="2" fill="${B}"/><rect x="20" y="24" width="8" height="28" rx="2" fill="${N}"/><rect x="31" y="14" width="8" height="38" rx="2" fill="${B}"/><path d="M7 54h36" stroke="${N}" stroke-width="3" stroke-linecap="round"/><g transform="translate(49 37)"><path d="M-2-13h4l1 4 4 2 4-2 3 3-2 4 2 4 4 1v4l-4 1-2 4 2 4-3 3-4-2-4 2-1 4h-4l-1-4-4-2-4 2-3-3 2-4-2-4-4-1v-4l4-1 2-4-2-4 3-3 4 2 4-2z" transform="scale(.75)" fill="${O}"/><circle r="3.6" fill="${W}"/></g>`,
+check:`<circle cx="32" cy="32" r="30" fill="${L}"/><rect x="13" y="10" width="34" height="46" rx="4" fill="${W}" stroke="${N}" stroke-width="3"/><rect x="22" y="6" width="16" height="9" rx="3" fill="${O}"/><g stroke="${O}" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M18 25l3 3 5-6M18 36l3 3 5-6M18 47l3 3 5-6"/></g><path d="M31 25h11M31 36h11M31 47h8" stroke="${B}" stroke-width="3" stroke-linecap="round"/>`,
+target:`<circle cx="30" cy="34" r="24" fill="${W}"/><circle cx="30" cy="34" r="24" fill="none" stroke="${O}" stroke-width="5"/><circle cx="30" cy="34" r="14" fill="none" stroke="${B}" stroke-width="5"/><circle cx="30" cy="34" r="5" fill="${O}"/><path d="M30 34L56 8" stroke="${N}" stroke-width="4" stroke-linecap="round"/><path d="M50 6l8-2-2 8-6 1z" fill="${N}"/>`,
+gear:`<path d="M28 4h8l2 7 6 3 6-4 6 6-4 6 3 6 7 2v8l-7 2-3 6 4 6-6 6-6-4-6 3-2 7h-8l-2-7-6-3-6 4-6-6 4-6-3-6-7-2v-8l7-2 3-6-4-6 6-6 6 4 6-3z" fill="#fff"/><circle cx="32" cy="32" r="9" fill="${O}"/>`,
+laptop:`<circle cx="32" cy="32" r="30" fill="${L}"/><rect x="12" y="14" width="40" height="27" rx="3" fill="${N}"/><rect x="15" y="17" width="34" height="21" fill="${W}"/><path d="M19 33l7-8 5 5 6-7 7 10z" fill="${B}"/><circle cx="23" cy="22" r="2.6" fill="${O}"/><path d="M6 44h52l-4 7H10z" fill="${N}"/><rect x="27" y="45" width="10" height="2" rx="1" fill="${B}"/>`,
+clock:`<circle cx="32" cy="32" r="27" fill="${W}" stroke="${N}" stroke-width="6"/><path d="M32 16v17l11 7" fill="none" stroke="${O}" stroke-width="6" stroke-linecap="round"/>`,
+cal:`<rect x="6" y="12" width="52" height="46" rx="7" fill="${W}" stroke="${O}" stroke-width="4"/><path d="M6 24h52" stroke="${O}" stroke-width="4"/><rect x="6" y="12" width="52" height="12" rx="6" fill="${O}"/><path d="M19 6v12M45 6v12" stroke="${N}" stroke-width="5" stroke-linecap="round"/><circle cx="40" cy="42" r="12" fill="${W}" stroke="${N}" stroke-width="4"/><path d="M40 35v8h6" fill="none" stroke="${N}" stroke-width="3.5" stroke-linecap="round"/><g fill="${B}"><rect x="13" y="31" width="7" height="6" rx="1.5"/><rect x="23" y="31" width="7" height="6" rx="1.5"/><rect x="13" y="42" width="7" height="6" rx="1.5"/></g>`,
+chip:`<circle cx="32" cy="32" r="31" fill="${L}" opacity=".9"/><path d="M10 50c4-6 12-8 22-8s18 2 22 8" fill="${B}"/><rect x="6" y="48" width="44" height="7" rx="2" fill="${N}"/><rect x="10" y="42" width="40" height="6" rx="2" fill="${O}"/><g stroke="${N}" stroke-width="2.4" stroke-linecap="round"><path d="M24 8v5M32 8v5M40 8v5M24 35v5M32 35v5M40 35v5M15 17h5M15 24h5M15 31h5M44 17h5M44 24h5M44 31h5"/></g><rect x="20" y="13" width="24" height="22" rx="4" fill="${N}"/><text x="32" y="29.5" text-anchor="middle" font-family="Poppins,Arial" font-weight="800" font-size="12" fill="${W}">IA</text><circle cx="44" cy="40" r="7" fill="${W}" stroke="${O}" stroke-width="3"/><path d="M49 45l6 6" stroke="${O}" stroke-width="4" stroke-linecap="round"/>`,
+cap:`<circle cx="32" cy="32" r="31" fill="${L}" opacity=".9"/><rect x="10" y="30" width="36" height="24" rx="3" fill="${N}"/><rect x="13" y="33" width="30" height="18" fill="${W}"/><rect x="17" y="42" width="4" height="7" fill="${B}"/><rect x="23" y="38" width="4" height="11" fill="${O}"/><rect x="29" y="35" width="4" height="14" fill="${B}"/><path d="M36 39h5M36 43h5M36 47h5" stroke="${N}" stroke-width="1.8"/><path d="M32 6l26 10-26 10L6 16z" fill="${N}"/><path d="M16 20v9c0 4 7 6 16 6s16-2 16-6v-9l-16 6z" fill="${N}" opacity=".85"/><path d="M52 18v14" stroke="${Y}" stroke-width="2.5"/><circle cx="52" cy="34" r="3" fill="${Y}"/>`,
+pin:`<path d="M26 68C14 50 3 38 3 25a23 23 0 0 1 46 0c0 13-11 25-23 43z" fill="${O}" stroke="#C85A0A" stroke-width="2"/><circle cx="26" cy="25" r="9" fill="${W}"/>`,
+poll:`<circle cx="32" cy="32" r="30" fill="${L}"/><rect x="11" y="10" width="42" height="34" rx="6" fill="${W}" stroke="${N}" stroke-width="3"/><rect x="17" y="18" width="22" height="5" rx="2.5" fill="${O}"/><rect x="17" y="26" width="30" height="5" rx="2.5" fill="${B}"/><rect x="17" y="34" width="14" height="5" rx="2.5" fill="${N}"/><path d="M22 44l-4 10 12-10" fill="${N}"/>`,
+board:`<circle cx="32" cy="32" r="30" fill="${L}"/><rect x="8" y="10" width="48" height="32" rx="3" fill="${W}" stroke="${N}" stroke-width="3"/><path d="M14 34l9-10 7 6 10-12 9 9" fill="none" stroke="${O}" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M32 42v8M22 56l10-6 10 6" stroke="${N}" stroke-width="3.4" stroke-linecap="round" fill="none"/>`,
+puzzle:`<circle cx="32" cy="32" r="30" fill="${L}"/><path d="M10 14h16a5 5 0 1 1 10 0h0v12a5 5 0 1 0 0 10v0H26a5 5 0 1 1-10 0H10z" fill="${O}"/><path d="M36 26h18v28H36V40a5 5 0 1 1 0-10z" fill="${N}"/><path d="M10 40h6a5 5 0 1 0 10 0h6v14H10z" fill="${B}"/>`,
+chat:`<circle cx="32" cy="32" r="30" fill="${L}"/><path d="M8 12h30a4 4 0 0 1 4 4v16a4 4 0 0 1-4 4H20l-8 7v-7H8a4 4 0 0 1-4-4V16a4 4 0 0 1 4-4z" fill="${N}"/><circle cx="15" cy="24" r="2.5" fill="${W}"/><circle cx="23" cy="24" r="2.5" fill="${W}"/><circle cx="31" cy="24" r="2.5" fill="${W}"/><path d="M28 30h28a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4h-4v7l-8-7H28a4 4 0 0 1-4-4V34a4 4 0 0 1 4-4z" fill="${O}"/>`,
+quiz:`<rect x="10" y="6" width="44" height="52" rx="6" fill="${W}"/><g stroke="${O}" stroke-width="3.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21l3 3 6-7M17 36l3 3 6-7"/></g><path d="M31 21h16M31 36h16M17 50h30" stroke="${N}" stroke-width="3.4" stroke-linecap="round"/>`,
+keep:`<circle cx="32" cy="32" r="28" fill="#2BA84A"/><path d="M19 29a14 14 0 0 1 25-6M45 35a14 14 0 0 1-25 6" fill="none" stroke="${W}" stroke-width="5" stroke-linecap="round"/><path d="M46 14v10H36M18 50V40h10" fill="none" stroke="${W}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`,
+improve:`<rect x="8" y="38" width="12" height="18" rx="2" fill="#F6B27A"/><rect x="26" y="26" width="12" height="30" rx="2" fill="${O}"/><rect x="44" y="12" width="12" height="44" rx="2" fill="#D9620B"/>`,
+start:`<circle cx="32" cy="32" r="28" fill="#1F5FC4"/><path d="M26 19l18 13-18 13z" fill="${W}"/>`,
+stop:`<circle cx="32" cy="32" r="28" fill="#D32F2F"/><rect x="21" y="21" width="22" height="22" rx="4" fill="${W}"/>`,
+flagS:`<path d="M8 4v118" stroke="${N}" stroke-width="5" stroke-linecap="round"/><path d="M10 6h46l-10 16 10 16H10z" fill="${N}"/><path d="M16 22h28" stroke="${O}" stroke-width="5" stroke-linecap="round"/>`,
+flagF:`<path d="M8 4v118" stroke="${N}" stroke-width="5" stroke-linecap="round"/><g><rect x="10" y="6" width="48" height="34" fill="${W}" stroke="${N}" stroke-width="2"/>${[0,1,2,3,4,5].map(c=>[0,1,2,3].map(r=>(c+r)%2?'':`<rect x="${10+c*8}" y="${6+r*8.5}" width="8" height="8.5" fill="${N}"/>`).join('')).join('')}</g>`
+};
+const vb=k=>k==='flagS'||k==='flagF'?'0 0 66 124':k==='pin'?'0 0 52 70':'0 0 64 64';
+const svg=k=>`<svg viewBox="${vb(k)}" aria-hidden="true">${I[k]}</svg>`;
+const fillIcons=root=>root.querySelectorAll('[data-i]').forEach(e=>{if(!e.innerHTML)e.innerHTML=svg(e.dataset.i)});
+
+
+I.lang=`<circle cx="32" cy="32" r="30" fill="${L}"/><path d="M8 12h28a4 4 0 0 1 4 4v16a4 4 0 0 1-4 4H20l-8 7v-7H8a4 4 0 0 1-4-4V16a4 4 0 0 1 4-4z" fill="${N}"/><text x="22" y="30" text-anchor="middle" font-family="Poppins,Arial" font-weight="800" font-size="14" fill="${W}">Aa</text><path d="M28 30h28a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4h-4v7l-8-7H28a4 4 0 0 1-4-4V34a4 4 0 0 1 4-4z" fill="${O}"/><path d="M33 46l6-11 6 11M35 42h8" stroke="${W}" stroke-width="2.6" fill="none" stroke-linecap="round"/>`;
+
+/* ---------- axes, postures ---------- */
+const AX={C:{n:'Comprendre',c:'#14246B',ic:'bulb',t:'Les fondements de la recherche scientifique : situer l’IAG dans la démarche du chercheur'},
+E:{n:'Explorer',c:'#2E6FD8',ic:'books',t:'La recherche documentaire à l’ère de l’IAG : vers une complémentarité des approches'},
+S:{n:'Structurer',c:'#F07A1E',ic:'doc',t:'De la littérature scientifique à la construction des connaissances : accompagner sans se substituer'},
+P:{n:'Produire',c:'#0F8C8C',ic:'chart',t:'De l’instrument de collecte à la production scientifique : auditer, traiter et analyser'},
+R:{n:'Responsabiliser',c:'#8A4FD1',ic:'check',t:'De la bibliographie à l’IAgraphie : traçabilité, transparence et intégrité scientifique'}};
+const POS={doc:['Assistant documentaire','books','E'],lec:['Assistant de lecture','doc','S'],met:['Assistant méthodologique','puzzle','SP'],cri:['Interlocuteur critique','chat','S'],lin:['Assistant linguistique','lang','S'],ana:['Assistant analytique','chart','P'],vis:['Assistant de visualisation','board','P'],ver:['Assistant de vérification','check','R']};
+
+/* ---------- contenu de l'atelier (4 h) ---------- */
+const ST=[
+{ph:'Phase 0',v:'Accueillir',s:'(Contexte et attentes)',t:'0 – 10 min',d:10,ic:'users',
+ obj:'<b>Expliciter</b> les attentes, les besoins et les représentations initiales des participants.',
+ app:[5,['Cadre général, enjeux et objectifs de l’atelier','Présentation de la feuille de route et des règles de participation']],
+ act:['Exprimer pour orienter',5,'Nuage de mots Wooclap : « Quelles sont vos principales attentes vis-à-vis de cet atelier ? » · retour collectif de 2 min','Après la mise en contexte de l’atelier'],
+ side:['laptop','Outil clé','Wooclap – nuage de mots interactif']},
+{ph:'Phase 1',v:'Comprendre',s:'(Découvrir les postures)',t:'10 – 25 min',d:15,ic:'bulb',ax:'C',lv:'Analyser',
+ obj:'<b>Distinguer</b>, à partir de situations de recherche, les usages de l’IAG relevant de l’assistance de ceux relevant de la substitution intellectuelle.',
+ app:[15,['La recherche, processus systématique de construction de connaissances (Creswell et Creswell, 2018)','Les étapes du processus de recherche (Creswell et Guetterman, 2020)','Ce que l’IAG facilite, reconfigure ou automatise','Huit postures de l’IAG et une posture à risque : le substitut intellectuel']],
+ side:['board','Support','Exposé illustré, schéma du processus de recherche et exemples contextualisés']},
+{ph:'Phase 2',v:'Explorer',s:'(Rechercher)',t:'25 – 80 min',d:55,ic:'books',ax:'E',lv:'Analyser',
+ obj:'<b>Comparer</b> les résultats de stratégies documentaires conventionnelles et augmentées appliquées à une même question de recherche.',
+ app:[35,['Fonctions de la recherche documentaire (Creswell et Guetterman, 2020 ; ACRL, 2016)','Démarche en sept étapes : délimiter, conceptualiser, instrumenter, explorer, évaluer, organiser, ajuster','Approches conventionnelles et augmentées, complémentaires (Gusenbauer et Haddaway, 2020)','Démonstrations d’outils classés par besoin documentaire']],
+ act:['Une question, plusieurs itinéraires documentaires',20,'Même question pour tous · groupes de 2 à 5 · plusieurs outils et prompts · comparaison collective des résultats','À la fin de la phase « Explorer »'],
+ side:['books','Repère','La recherche comme « exploration stratégique » (ACRL, 2016)'],
+ tools:[['Recherche conventionnelle','doc',['Google Scholar','ERIC','HAL']],['Découverte assistée par l’IA','doc',['Semantic Scholar','Consensus','Elicit','Felo AI']],['Réseaux de citations et cartographie','doc',['ResearchRabbit','Litmaps','Inciteful','Connected Papers']],['Recommandation et métadonnées','doc',['Keenious','OpenAlex']]]},
+{ph:'Phase 3',v:'Structurer',s:'et ajuster',t:'80 – 135 min',d:55,ic:'doc',ax:'S',lv:'Créer',
+ obj:'<b>Concevoir</b> un assistant méthodologique personnalisé, adossé à des ressources scientifiques, qui soutient la réflexion du chercheur par le questionnement.',
+ app:[30,['De la recherche documentaire à la revue de la littérature','L’IAG comme interlocuteur maïeutique : questionner pour faire penser (Platon, <i>Théétète</i>)','Assistance à la lecture et assistance linguistique','Personnalisation : espaces projets, Gems, corpus et RAG (Lewis et al., 2020)']],
+ act:['Construire son compagnon méthodologique',25,'Même question · compagnon de lecture, de réflexion méthodologique ou critique · conçu pour questionner avant de proposer','À la fin de la phase « Structurer et ajuster »'],
+ side:['chat','Approche','Maïeutique socratique : l’IAG interroge le chercheur avant de proposer des pistes'],
+ tools:[['Lecture et compréhension','lec',['NotebookLM','SciSpace','Scholarcy','Elicit']],['Révision linguistique','lin',['LanguageTool','Grammarly','DeepL Write','Writefull','Paperpal']],['Assistants personnalisés','met',['ChatGPT Projects','Claude Projects','Gems (Gemini)','LLM en logique maïeutique']]]},
+{ph:'Phase 4',v:'Produire',s:'(Analyser et valoriser)',t:'135 – 205 min',d:70,ic:'chart',ax:'P',lv:'Évaluer',
+ obj:'<b>Évaluer</b> la qualité de deux instruments de collecte de données à l’aide de critères méthodologiques référencés.',
+ app:[35,['Audit des instruments et biais de formulation (Artino et al., 2014 ; Castillo-Montoya, 2016)','Préparation et protection des données (loi n° 09-08)','Analyse quantitative et qualitative assistée, par tutoriels projetés','Représentation et valorisation des résultats']],
+ act:['Auditer, analyser et interpréter',35,'Questionnaire de 5–6 questions et guide d’entretien de 2–3 questions · audit avec l’IAG · vérification · justification devant l’équipe','À la fin de la phase « Produire »'],
+ side:['chart','Vigilance','Biais de formulation : question orientée, double, présupposition, désirabilité sociale, acquiescement'],
+ tools:[['4.1 Audit des instruments de collecte','met',[['Qualtrics ExpertReview','https://www.qualtrics.com/'],['SurveyMonkey','https://www.surveymonkey.com/'],'Gems et compagnons méthodologiques']],['4.2 Préparation des données','met',['Whisper','OpenRefine','LibreOffice Calc','Google Colab']],['4.3 Analyse quantitative','ana',['JASP','jamovi','IBM SPSS Statistics']],['4.4 Analyse qualitative','ana',['QualCoder','Taguette','Ollama']],['4.5 Représentation et valorisation','vis',['RAWGraphs','Datawrapper','Mermaid','diagrams.net','Canva']]]},
+{ph:'Phase 5',v:'Responsabiliser',s:'(Référencer et tracer)',t:'205 – 235 min',d:30,ic:'check',ax:'R',lv:'Évaluer',
+ obj:'<b>Vérifier</b> l’exactitude d’une bibliographie et la traçabilité des contributions de l’IAG selon les recommandations de l’APA.',
+ app:[15,['Vérifier avant de référencer : 55 % de références inventées par GPT-3.5 (Walters et Wilder, 2023)','Citer l’IAG selon l’APA (McAdoo et al., 2025)','De la bibliographie à l’IAgraphie : guide APA de déclaration de contribution (2026)','Intégrité et responsabilité (ALLEA, 2023 ; Commission européenne, 2026)']],
+ act:['De la bibliographie à l’IAgraphie',15,'A : IAgraphie d’un texte de cas · B : 10 références piégées, vérifiées par l’IAG puis directement à la source','À la fin de la phase « Responsabiliser »'],
+ side:['check','Cadre','Guide de l’APA : déclaration de contribution de l’IA (2026)'],
+ tools:[['Gestion des références','ver',['Zotero','ZoteroBib','Mendeley']],['Identifiants et métadonnées','ver',['Crossref','DOI.org','OpenAlex']],['Statut et contexte de citation','ver',['Retraction Watch','Scite']],['Normes et déclaration','ver',['APA Style','AI Contribution Statement Guide']]]},
+{kiss:1,ph:'Phase 6',v:'Évaluer',s:'pour améliorer',t:'235 – 240 min',d:5,ic:'kiss',
+ obj:'<b>Porter</b> un regard réflexif sur l’expérience de formation et identifier des pistes d’amélioration.',
+ act:['Évaluer pour améliorer',5,'Wooclap · Keep, Improve, Start, Stop (Hoon et al., 2015)','À la clôture de l’atelier'],
+ side:['quizc','Méthode','KISS : Keep, Improve, Start, Stop']}
+];
+I.quizc=`<circle cx="32" cy="32" r="30" fill="${L}"/><rect x="14" y="8" width="36" height="48" rx="5" fill="${W}" stroke="${N}" stroke-width="3"/><g stroke="${O}" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 22l3 3 5-6M20 36l3 3 5-6"/></g><path d="M32 22h12M32 36h12M20 48h24" stroke="${B}" stroke-width="3" stroke-linecap="round"/>`;
+I.kiss=`<circle cx="32" cy="32" r="30" fill="${L}"/><rect x="12" y="12" width="18" height="18" rx="5" fill="#2BA84A"/><rect x="34" y="12" width="18" height="18" rx="5" fill="${O}"/><rect x="12" y="34" width="18" height="18" rx="5" fill="#1F5FC4"/><rect x="34" y="34" width="18" height="18" rx="5" fill="#D32F2F"/><path d="M18 21l3 3 5-5" stroke="#fff" stroke-width="2.6" fill="none"/><path d="M39 43l5-4v8z" fill="#fff"/>`;
+const n=ST.length;
+const esc=s=>s;
+
+/* ---------- diapo axes et postures ---------- */
+{
+  const k=['C','E','S','P','R'];
+  let h=k.map((a,i)=>`<div class="axc a" style="--c:${AX[a].c};--i:${1+i*.3};grid-column:${i+1};grid-row:1"><div class="hd"><span class="ico" data-i="${AX[a].ic}"></span><b>${AX[a].n}</b></div><p>${AX[a].t}</p></div>`).join('');
+  h+=`<div class="cmp a" style="--i:3;grid-column:1;grid-row:2/7"><span class="ico" data-i="users"></span>Comprendre : découvrir les postures que l’IAG peut jouer auprès du chercheur</div>`;
+  h+=`<div class="band2 a" style="--i:3;grid-row:2"><span class="ico" data-i="chip"></span>Postures attribuées à l’IAG, alignées sur les axes de formation</div>`;
+  const pl=[['met',3,'3/5'],['doc',4,'2'],['lec',4,'3'],['ana',4,'4'],['ver',4,'5'],['cri',5,'3'],['vis',5,'4'],['lin',6,'3']];
+  h+=pl.map(([p,r,c],i)=>{const [nm,ic,a]=POS[p];const col=a==='SP'?'#F07A1E':AX[a].c;
+    return `<div class="pst a" style="--c:${col};--i:${4+i*.25};grid-row:${r};grid-column:${c}${a==='SP'?';border-image:linear-gradient(90deg,#F07A1E,#0F8C8C) 1;border-radius:0':''}"><span class="ico" data-i="${ic}"></span>${nm}${a==='SP'?'<small>Structurer et Produire</small>':''}</div>`}).join('');
+  document.getElementById('axg').innerHTML=h;
+}
+
+/* ---------- diapos des étapes et panoplies ---------- */
+const tcol={doc:'#2E6FD8',lec:'#F07A1E',lin:'#F07A1E',met:'#0F8C8C',ana:'#0F8C8C',vis:'#0F8C8C',ver:'#8A4FD1'};
+document.getElementById('steps').innerHTML=ST.map((s,j)=>{
+  if(s.pause)return `<section class="sc" data-k="s${j}"><div class="pausec a"><div class="card"><span class="ico" data-i="coffee"></span><div><h2>Pause — 10 min</h2><p>135 – 145 min</p></div></div></div></section>`;
+  const axe='';
+  const side=s.pos?`<div class="card pos a" style="--i:1"><div class="lb2"><span class="ico" data-i="chip"></span>Posture${s.pos.length>1?'s':''} attribuée${s.pos.length>1?'s':''} à l’IA</div><div class="chips">${s.pos.map(p=>`<span class="chip">${POS[p][0]}</span>`).join('')}</div></div>`
+    :`<div class="card tool a" style="--i:1"><span class="ico" data-i="${s.side[0]}"></span><p><b>${s.side[1]} :</b> ${s.side[2]}</p></div>`;
+  const left=`<div class="col"><div class="card obj a" style="--i:0">${axe}<div class="ch"><span class="ico" data-i="target"></span>Objectif</div><p>${s.obj}</p>${s.lv?`<span class="bl">Taxonomie de Bloom : ${s.lv}</span>`:''}</div>${side}<div class="tot a" style="--i:2">Total : ${s.d} min</div></div>`;
+  const actv=s.act?`<div class="card actv a" style="--i:2"><span class="ico" data-i="puzzle"></span><div class="tx"><small>Activité</small><b>${s.act[0]}</b><span>${s.act[2]}</span></div><em>${s.act[1]} min</em></div>`:'';
+  let right;
+  if(s.kiss)right=`<div class="rc">${actv}<div class="kp a" style="--i:3">
+     <div class="card" style="border-color:#7CC98A"><span class="ico" data-i="keep"></span><b style="color:#1E8E3E">Keep</b><span>À conserver</span></div>
+     <div class="card" style="border-color:#F6B27A"><span class="ico" data-i="improve"></span><b style="color:#D9620B">Improve</b><span>À améliorer</span></div>
+     <div class="card" style="border-color:#9DC2F0"><span class="ico" data-i="start"></span><b style="color:#1F5FC4">Start</b><span>À démarrer</span></div>
+     <div class="card" style="border-color:#F2A0A0"><span class="ico" data-i="stop"></span><b style="color:#C62828">Stop</b><span>À arrêter</span></div></div></div>`;
+  else right=`<div class="rc"><div class="card acts a ${s.app[1].length>4?'many':''}" style="--i:1"><div class="ah"><span class="ico" data-i="gear"></span>Apports et démonstrations<em>${s.app[0]} min</em></div><ul>${s.app[1].map(a=>`<li><span>${a}</span></li>`).join('')}</ul></div>${actv}</div>`;
+  let out=`<section class="sc" data-k="s${j}"><div class="panel">${left}${right}</div></section>`;
+  if(s.tools){let d=0;
+    out+=`<section class="sc" data-k="t${j}"><div class="card tools a"><div class="ah"><span class="ico" data-i="laptop"></span>Panoplie d’outils — ${s.v}${s.s&&s.s[0]!=='('?' '+s.s:''}</div>
+     <div class="tg${s.tools.length>4?' dense':''}" style="grid-template-columns:repeat(${s.tools.length},minmax(0,1fr))">${s.tools.map(([g,p,list])=>`<div class="grp"><h4>${g}</h4><span class="pz" style="background:${tcol[p]}">${POS[p][0]}</span>${list.map(x=>{const nm=Array.isArray(x)?x[0]:x,lk=Array.isArray(x)?`<a href="${x[1]}" target="_blank" rel="noopener">${nm}</a>`:nm;return `<div class="tile" style="--d:${d++}"><i style="background:${tcol[p]}">${nm[0].toUpperCase()}</i>${lk}</div>`}).join('')}</div>`).join('')}</div></div></section>`;}
+  return out;
+}).join('');
+
+/* ---------- démarche : activités ---------- */
+document.getElementById('al').innerHTML=ST.filter(s=>s.act).map(s=>`<div class="ar"><span class="ico" data-i="${s.kiss?'quizc':'puzzle'}"></span><b>${s.act[0]}</b><span>${s.act[3]}</span><em>${s.act[1]} min</em></div>`).join('');
+
+/* ---------- stations de la route ---------- */
+const stWrap=document.getElementById('stations');
+stWrap.innerHTML=`<div class="flag" id="fS"><div class="tx">Démarrage<br>(0:00)</div><div class="fl ico" data-i="flagS"></div></div>`+
+ ST.map((s,j)=>`<div class="st${s.pause?' pause':''}" id="st${j}"><div class="ill ico" data-i="${s.ic}"></div><div class="pin ico" data-i="pin"></div>
+ <div class="lab"><b>${s.ph}</b><strong${s.v.length>12?' style="font-size:23px"':''}>${s.v}</strong>${s.s?`<i>${s.s}</i>`:''}</div><div class="tm"><span class="ico" data-i="clock"></span>${s.t}</div></div>`).join('')+
+ `<div class="flag fin" id="fF"><div class="tx">Arrivée (4 h)</div><div class="fl ico" data-i="flagF"></div></div>`;
+const els=[document.getElementById('fS'),...ST.map((_,j)=>document.getElementById('st'+j)),document.getElementById('fF')];
+const W0=[160,...ST.map(()=>240),160], OX=[80,...ST.map(()=>120),80];
+
+/* vue d'ensemble */
+const oL=150,oR=1490,cw=(oR-oL)/n,cx=j=>oL+cw*(j+.5);
+document.getElementById('ov').innerHTML=ST.map((s,j)=>s.pause
+ ?`<div class="card ovc pz a" style="--i:${j*.6};left:${cx(j)-78}px;width:156px"><span class="ico" data-i="coffee"></span><b style="font-family:var(--disp);color:var(--navy);font-size:20px">Pause</b><div class="tot">10 min</div></div>`
+ :`<div class="card ovc a" style="--i:${j*.6};left:${cx(j)-78}px;width:156px"><p class="ob">${s.obj}</p>${s.app?`<p class="k" style="border:0;padding:0"><b>Apports :</b> ${s.app[0]} min</p>`:''}${s.act?`<p class="k"><b>Activité :</b> ${s.act[1]} min<br><i>${s.act[0]}</i></p>`:''}<div class="tot">${s.d} min</div></div>`).join('');
+
+const wav=j=>(j%2?16:-16);
+function targets(k){
+  const T=els.map(()=>({x:1800,y:285,s:.8,r:0}));
+  if(k===n){
+    T[0]={x:70,y:262,s:.66,r:1};
+    ST.forEach((_,j)=>T[j+1]={x:cx(j),y:262+wav(j)*.7,s:.64,r:1});
+    T[n+1]={x:1540,y:262,s:.66,r:1};return T;
+  }
+  const kk=Math.max(k,0), sc=[.74,.62,.54,.48,.43,.4,.37], gap=12, sCur=1.1, sF=k<=0?1:.62;
+  let sum=0;for(let j=0;j<kk;j++)sum+=W0[1]*sc[kk-j-1]+gap;
+  const xc=Math.max(800,30+W0[0]*sF+gap+sum+W0[1]*sCur/2);
+  let x=xc-W0[1]*sCur/2-gap;
+  for(let j=kk-1;j>=0;j--){const s=sc[kk-j-1],w=W0[1]*s;T[j+1]={x:x-w/2,y:285+wav(j),s,r:1};x-=w+gap}
+  T[0]={x:x-W0[0]*sF/2,y:285,s:sF,r:1};
+  if(k>=0)T[kk+1]={x:xc,y:285+wav(kk),s:sCur,r:1};
+  return T;
+}
+let cur=targets(-1).map(o=>({...o}));
+const road=document.getElementById('road');
+function draw(mode){
+  els.forEach((e,i)=>{const c=cur[i];e.style.transform=`translate(${c.x-OX[i]}px,${c.y-150}px) scale(${c.s})`;e.style.opacity=Math.min(1,c.r*1.4);e.style.visibility=c.r<.01?'hidden':'visible'});
+  const P=[{x:-40,y:cur[0].y}];
+  cur.forEach(c=>{if(c.r>.01)P.push({x:c.x,y:c.y})});
+  P.sort((a,b)=>a.x-b.x);
+  let d=`M${P[0].x} ${P[0].y}`;
+  for(let i=1;i<P.length;i++){const a=P[i-1],b=P[i],h=(b.x-a.x)/2;d+=` C${a.x+h} ${a.y} ${b.x-h} ${b.y} ${b.x} ${b.y}`}
+  const last=P[P.length-1];
+  const tail=mode==='ov'?'':`<path d="M${last.x} ${last.y} C${last.x+90} ${last.y} ${last.x+110} ${last.y+30} ${last.x+260} ${last.y+30}" fill="none" stroke="#1B2C68" stroke-width="26" stroke-linecap="round" opacity=".18"/>`;
+  road.innerHTML=tail+`<path d="${d}" fill="none" stroke="#1B2C68" stroke-width="30" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#fff" stroke-width="3.5" stroke-dasharray="16 14"/>`;
+}
+let raf=0,lastK=null;
+function animateTo(k){
+  if(k===lastK)return;lastK=k;
+  const T=targets(k),F=cur.map(o=>({...o})),t0=performance.now(),D=matchMedia('(prefers-reduced-motion: reduce)').matches?1:950,mode=k===n?'ov':'';
+  cancelAnimationFrame(raf);
+  els.forEach((e,i)=>e.classList.toggle('cur',k>=0&&k<n&&i===k+1));
+  const step=now=>{let p=Math.min(1,(now-t0)/D);p=p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
+    cur=F.map((f,i)=>({x:f.x+(T[i].x-f.x)*p,y:f.y+(T[i].y-f.y)*p,s:f.s+(T[i].s-f.s)*p,r:f.r+(T[i].r-f.r)*p}));
+    draw(mode);if(p<1)raf=requestAnimationFrame(step)};
+  raf=requestAnimationFrame(step);
+}
+
+/* mini-route de couverture */
+(()=>{const m=document.getElementById('miniroad');const xs=[120,310,500,690,880,1070,1260,1450];let d='M-20 110';
+ xs.forEach((x,i)=>{const y=i%2?96:120,px=i?xs[i-1]:-20,py=i?((i-1)%2?96:120):110,h=(x-px)/2;d+=` C${px+h} ${py} ${x-h} ${y} ${x} ${y}`});d+=' C1540 96 1580 108 1640 108';
+ m.innerHTML=`<path d="${d}" fill="none" stroke="#1B2C68" stroke-width="22" opacity=".9"/><path d="${d}" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="12 11"/>`+
+ xs.map((x,i)=>`<g transform="translate(${x-14} ${(i%2?96:120)-42})"><svg width="28" height="38" viewBox="0 0 52 70">${I.pin}</svg></g>`).join('')})();
+
+fillIcons(document);
+
+/* ---------- navigation ---------- */
+const slides=[...document.querySelectorAll('.sc')], total=slides.length;
+const map=document.getElementById('map'),hstep=document.getElementById('hstep');
+let idx=-1;
+function show(i){
+  i=Math.max(0,Math.min(total-1,i));if(i===idx)return;idx=i;
+  slides.forEach((s,j)=>s.classList.toggle('on',j===i));
+  const k=slides[i].dataset.k;
+  let step;
+  if(k[0]==='s'||k[0]==='t')step=+k.slice(1);else if(k==='cover'||k==='axes')step=-1;else step=n;
+  const onMap=k[0]==='s'||k[0]==='t'||k==='ov';
+  map.classList.toggle('off',!onMap);
+  const hs=document.getElementById('hsub');hs.textContent='Intelligence artificielle et recherche scientifique';
+  if(step>=0&&step<n){const s=ST[step];hstep.textContent=(k[0]==='t'?'Outils · ':'')+`${s.ph} · ${s.t}`;if(s.ax)hs.textContent=`Axe « ${AX[s.ax].n} » — ${AX[s.ax].t}`}else hstep.textContent='Feuille de route complète';
+  animateTo(step);
+  document.getElementById('cnt').textContent=`${i+1} / ${total}`;
+  document.getElementById('prog').style.width=`${(i+1)/total*100}%`;
+}
+const fit=()=>{const s=Math.min(innerWidth/1600,innerHeight/900);document.getElementById('stage').style.transform=`scale(${s})`};
+addEventListener('resize',fit);fit();
+document.getElementById('next').onclick=()=>show(idx+1);
+document.getElementById('prev').onclick=()=>show(idx-1);
+document.getElementById('fs').onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{})}catch(e){}};
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();show(idx+1)}else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();show(idx-1)}else if(e.key==='Home')show(0);else if(e.key==='End')show(total-1)});
+document.getElementById('stage').addEventListener('click',e=>{if(e.target.closest('a'))return;const r=e.currentTarget.getBoundingClientRect();show(e.clientX>r.left+r.width*.3?idx+1:idx-1)});
+draw('');show(0);
+}
+</script>
+</body>
+</html>
